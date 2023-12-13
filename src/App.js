@@ -1,21 +1,30 @@
-import "./App.css";
+import { useState, useEffect } from "react";
+import Form from "./Form";
+import List from "./List";
 
 function App() {
+  const API_URL = "https://jsonplaceholder.typicode.com/";
+  const [reqType, setReqType] = useState("users");
+  const [items, setItems] = useState([]);
+
+  //everytime reqType changes we use useEffect
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await fetch(`${API_URL}${reqType}`);
+        const data = await response.json();
+        // console.log(data);
+        setItems(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchItems();
+  }, [reqType]);
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Form reqType={reqType} setReqType={setReqType} />
+      <List items={items} />
     </div>
   );
 }
